@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bixcean - Buku Pantai Digital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(180deg, 
+                #87CEEB 0%, 
+                #5F9EA0 20%, 
+                #4682B4 50%, 
+                #20B2AA 80%, 
+                #008B8B 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 100px; /* Dikurangi untuk nav kecil */
+            padding-top: 80px; /* Space untuk judul kiri atas */
+        }
+
+        /* Background Terumbu Karang */
+        .coral-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .coral {
+            position: absolute;
+            font-size: 2.8rem;
+            animation: sway 8s ease-in-out infinite;
+        }
+
+        .coral1 { top: 20%; left: 10%; animation-delay: 0s; }
+        .coral2 { top: 30%; right: 15%; font-size: 2.3rem; animation-delay: 2s; }
+        .coral3 { bottom: 30%; left: 20%; font-size: 3.8rem; animation-delay: 4s; }
+        .coral4 { bottom: 40%; right: 10%; font-size: 3.2rem; animation-delay: 1s; }
+        .coral5 { top: 60%; left: 5%; font-size: 2.6rem; animation-delay: 3s; }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg) translateY(0px); }
+            50% { transform: rotate(2deg) translateY(-8px); }
+        }
+
+        /* Efek Ombak */
+        .waves {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            z-index: 1;
+        }
+        .wave { position: absolute; left: 0; width: 200%; height: 100%; background-repeat: repeat; background-position: 0 bottom; }
+        .wave1 { background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDBweCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCw0MGgxMDB2NjBIMHoiIGZpbGw9InJnYmEoMjQsMTEyLDIwOCwwLjYpIi8+PC9zdmc+'); animation: wave 15s linear infinite; }
+        .wave2 { background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDBweCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCw0NWgxMDB2NTVIMHoiIGZpbGw9InJnYmEoMjQsMTEyLDIwOCwwLjgpIi8+PC9zdmc+'); animation: wave 20s linear infinite reverse; }
+        .wave3 { background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDBweCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCw1MGgxMDB2NTBIMHoiIGZpbGw9InJnYmEoMjQsMTEyLDIwOCwwLjgpIi8+PC9zdmc+'); animation: wave 25s linear infinite; }
+        @keyframes wave { 0%,100% { transform: translateX(0) scaleY(1); } 50% { transform: translateX(-25%) scaleY(0.55); } }
+
+        /* Header - KIRI ATAS */
+        .header {
+            position: fixed;
+            top: 20px;
+            left: 20px; /* KIRI */
+            transform: none; /* Hapus translateX */
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(15px);
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,139,139,0.4);
+            border: 2px solid rgba(0,139,139,0.3);
+        }
+        .logo {
+            font-size: 2.2rem; /* Dikecilkan */
+            font-weight: bold;
+            color: #008B8B;
+            text-align: left;
+            letter-spacing: 1px;
+        }
+
+        /* Book Container */
+        .book-container {
+            max-width: 900px;
+            margin: 20px auto 120px; /* Dikurangi top margin */
+            perspective: 2500px;
+        }
+
+        /* Digital Book */
+        .digital-book {
+            position: relative;
+            width: 100%;
+            height: 650px;
+            transform-style: preserve-3d;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, 
+                rgba(255,255,255,0.95), 
+                rgba(248,249,255,0.9));
+            box-shadow: 
+                0 25px 70px rgba(0,0,0,0.15),
+                inset 0 0 25px rgba(255,255,255,0.9),
+                10px 0 20px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 50px;
+            backface-visibility: hidden;
+            transform-origin: left center;
+            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 1;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .page.active { 
+            z-index: 10; 
+            box-shadow: 
+                0 30px 80px rgba(0,139,139,0.3),
+                inset 0 0 30px rgba(255,255,255,1);
+        }
+
+        .page.flipped { 
+            transform: rotateY(-180deg) scale(0.95); 
+            opacity: 0.3; 
+            z-index: 5;
+            box-shadow: -10px 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Page Content */
+        .page-content {
+            display: flex;
+            gap: 35px;
+            height: 100%;
+            align-items: flex-start;
+        }
+
+        .photo-section {
+            flex: 0 0 280px;
+            height: 420px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,139,139,0.3);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(0,139,139,0.2);
+        }
+
+        .photo-section:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 22px 55px rgba(0,139,139,0.5);
+        }
+
+        .photo-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #4682B4;
+            font-size: 1.1rem;
+            border: 3px dashed #20B2AA;
+            background: linear-gradient(135deg, rgba(32,178,170,0.1), rgba(70,130,180,0.1));
+            gap: 12px;
+        }
+
+        .form-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+            padding: 4px 0;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #006994;
+            min-width: 85px;
+            font-size: 1.1rem;
+            padding-top: 9px;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 13px 18px;
+            border: 2.5px solid #20B2AA;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.95);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #008B8B;
+            box-shadow: 0 0 0 3px rgba(0,139,139,0.2);
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        .kesan-section {
+            margin-top: auto;
+            padding-top: 18px;
+            border-top: 2px solid rgba(32,178,170,0.3);
+        }
+
+        .kesan-label {
+            font-weight: bold;
+            color: #006994;
+            margin-bottom: 12px;
+            font-size: 1.15rem;
+        }
+
+        .kesan-textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: 18px;
+            border: 2.5px solid #20B2AA;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        /* Navigation - DIKECILKAN */
+        .book-nav {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px; /* Dikecilkan */
+            align-items: center;
+            z-index: 100;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(15px);
+            padding: 12px 25px; /* Dikecilkan */
+            border-radius: 30px;
+            box-shadow: 0 12px 35px rgba(0,139,139,0.4);
+            border: 2px solid rgba(0,139,139,0.3);
+        }
+
+        .nav-btn {
+            padding: 10px 20px; /* Dikecilkan */
+            font-size: 1rem; /* Dikecilkan */
+            font-weight: bold;
+            border: none;
+            border-radius: 20px; /* Dikecilkan */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #20B2AA, #008B8B);
+            color: white;
+            box-shadow: 0 6px 20px rgba(32,178,170,0.4);
+            font-family: inherit;
+            min-width: 120px; /* Dikecilkan */
+        }
+
+        .nav-btn:hover:not(:disabled) { 
+            transform: translateY(-3px) scale(1.05); 
+            box-shadow: 0 10px 30px rgba(32,178,170,0.6); 
+        }
+
+        .nav-btn:disabled { 
+            opacity: 0.6; 
+            cursor: not-allowed; 
+            transform: none; 
+            background: #ccc;
+        }
+
+        .page-info {
+            font-size: 1.1rem; /* Dikecilkan */
+            color: #006994;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .header { top: 15px; left: 15px; padding: 12px 20px; }
+            .logo { font-size: 1.8rem; }
+            .digital-book { height: 550px; }
+            .book-container { margin: 10px auto 100px; }
+            .page-content { flex-direction: column; gap: 20px; }
+            .photo-section { height: 260px; flex: none; }
+            .book-nav { 
+                flex-direction: column; 
+                gap: 12px;
+                padding: 20px 20px;
+                bottom: 8px;
+            }
+            .nav-btn { min-width: 110px; padding: 8px 16px; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Terumbu Karang -->
+    <div class="coral-bg">
+        <div class="coral coral1">🪸</div>
+        <div class="coral coral2">🪸</div>
+        <div class="coral coral3">🌿</div>
+        <div class="coral coral4">🪸</div>
+        <div class="coral coral5">🌊</div>
+    </div>
+
+    <!-- Header KIRI ATAS -->
+    <div class="header">
+        <div class="logo">bixcean</div>
+    </div>
+
+    <!-- Waves -->
+    <div class="waves">
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
+    </div>
+
+    <!-- Book -->
+    <div class="book-container">
+        <div class="digital-book" id="digitalBook"></div>
+    </div>
+
+    <!-- Navigation KECIL BAWAH TENGAH -->
+    <div class="book-nav">
+        <button class="nav-btn" id="prevBtn" onclick="prevPage()">←</button>
+        <div class="page-info" id="pageInfo">1 / 24</div>
+        <button class="nav-btn" id="nextBtn" onclick="nextPage()">→</button>
+    </div>
+
+    <script>
+        const totalPages = 24;
+        let currentPage = 0;
+        let pageData = JSON.parse(localStorage.getItem('bixceanData')) || { photos: [], forms: [] };
+
+        while (pageData.photos.length < totalPages) {
+            pageData.photos.push(null);
+            pageData.forms.push({ nama: '', ttl: '', hobi: '', hp: '', social: '', kesan: '' });
+        }
+
+        const book = document.getElementById('digitalBook');
+        for (let i = 0; i < totalPages; i++) {
+            const page = document.createElement('div');
+            page.className = i === 0 ? 'page active' : 'page';
+            page.dataset.page = i + 1;
+            page.innerHTML = `
+                <div class="page-content">
+                    <div class="photo-section" onclick="uploadPhoto(${i})">
+                        ${pageData.photos[i] ? 
+                            `<img src="${pageData.photos[i]}" alt="Foto">` : 
+                            `<div class="photo-placeholder">
+                                <div>📸</div>
+                                <div>Upload</div>
+                                <div>Hal ${i+1}</div>
+                            </div>`
+                        }
+                    </div>
+                    <div class="form-section">
+                        <div class="form-group">
+                            <div class="form-label">Nama:</div>
+                            <input type="text" class="form-input" value="${pageData.forms[i].nama}" oninput="saveForm(${i}, 'nama', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">TTL:</div>
+                            <input type="text" class="form-input" value="${pageData.forms[i].ttl}" oninput="saveForm(${i}, 'ttl', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">Hobi:</div>
+                            <input type="text" class="form-input" value="${pageData.forms[i].hobi}" oninput="saveForm(${i}, 'hobi', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">No HP:</div>
+                            <input type="tel" class="form-input" value="${pageData.forms[i].hp}" oninput="saveForm(${i}, 'hp', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">Social:</div>
+                            <input type="text" class="form-input" value="${pageData.forms[i].social}" oninput="saveForm(${i}, 'social', this.value)">
+                        </div>
+                        <div class="kesan-section">
+                            <div class="kesan-label">Kesan Pesan:</div>
+                            <textarea class="kesan-textarea" oninput="saveForm(${i}, 'kesan', this.value)">${pageData.forms[i].kesan}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+            book.appendChild(page);
+        }
+
+        // Functions sama persis seperti sebelumnya
+        function uploadPhoto(pageIndex) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                        pageData.photos[pageIndex] = ev.target.result;
+                        localStorage.setItem('bixceanData', JSON.stringify(pageData));
+                        updatePhoto(pageIndex);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function updatePhoto(pageIndex) {
+            const photoSection = document.querySelectorAll('.photo-section')[pageIndex];
+            if (pageData.photos[pageIndex] && photoSection.querySelector('.photo-placeholder')) {
+                photoSection.innerHTML = `<img src="${pageData.photos[pageIndex]}" alt="Foto">`;
+            }
+        }
+
+        function saveForm(pageIndex, field, value) {
+            pageData.forms[pageIndex][field] = value;
+            localStorage.setItem('bixceanData', JSON.stringify(pageData));
+        }
+
+        function showPage(pageNum) {
+            document.querySelectorAll('.page').forEach((page, index) => {
+                if (index < pageNum) page.classList.add('flipped'), page.classList.remove('active');
+                else if (index === pageNum) page.classList.add('active'), page.classList.remove('flipped');
+                else page.classList.remove('active', 'flipped');
+            });
+            document.getElementById('pageInfo').textContent = `${pageNum + 1} / ${totalPages}`;
+            updatePhoto(pageNum);
+        }
+
+        function nextPage() { if (currentPage < totalPages - 1) { currentPage++; showPage(currentPage); updateButtons(); } }
+        function prevPage() { if (currentPage > 0) { currentPage--; showPage(currentPage); updateButtons(); } }
+        function updateButtons() {
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages - 1;
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft') prevPage();
+        });
+
+        showPage(0);
+        updateButtons();
+    </script>
+</body>
+</html>
